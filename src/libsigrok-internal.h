@@ -2692,6 +2692,19 @@ SR_PRIV gboolean sr_vc96_packet_valid(const uint8_t *buf);
 SR_PRIV int sr_vc96_parse(const uint8_t *buf, float *floatval,
 		struct sr_datafeed_analog *analog, void *info);
 
+/*--- dmm/dso3d12.c ---------------------------------------------------------*/
+
+#define DSO3D12_PACKET_SIZE_MIN 8
+
+/* Dummy info struct. The parser does not use it. */
+struct dso3d12_info { int dummy; };
+
+SR_PRIV GSList *sr_zeeweii_dso3d12_scan(struct sr_dev_driver *di, GSList *options);
+SR_PRIV gboolean sr_zeeweii_dso3d12_packet_valid(void *st,
+	const uint8_t *buf, size_t len, size_t *pkt_len);
+SR_PRIV int sr_zeeweii_dso3d12_parse(void *st, const uint8_t *buf, size_t len,
+	double *val, struct sr_datafeed_analog *analog, void *info);
+
 /*--- lcr/es51919.c ---------------------------------------------------------*/
 
 /* Acquisition details which apply to all supported serial-lcr devices. */

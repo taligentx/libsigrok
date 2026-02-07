@@ -190,6 +190,7 @@ libsigrok_la_SOURCES += \
 	src/dmm/bm52x.c \
 	src/dmm/bm85x.c \
 	src/dmm/bm86x.c \
+	src/dmm/dso3d12.c \
 	src/dmm/dtm0660.c \
 	src/dmm/eev121gw.c \
 	src/dmm/es519xx.c \

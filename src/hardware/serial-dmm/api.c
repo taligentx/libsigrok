@@ -292,7 +292,7 @@ static int dev_acquisition_start(const struct sr_dev_inst *sdi)
 		CONN, SERIALCOMM, PACKETSIZE, TIMEOUT, DELAY, \
 		OPEN, REQUEST, VALID, PARSE, DETAILS, \
 		INIT_STATE, FREE_STATE, VALID_LEN, PARSE_LEN, \
-		CFG_GET, CFG_SET, CFG_LIST, ACQ_START) \
+		CFG_GET, CFG_SET, CFG_LIST, ACQ_START, SCAN) \
 	&((struct dmm_info) { \
 		{ \
 			.name = ID, \
@@ -300,7 +300,7 @@ static int dev_acquisition_start(const struct sr_dev_inst *sdi)
 			.api_version = 1, \
 			.init = std_init, \
 			.cleanup = std_cleanup, \
-			.scan = scan, \
+			.scan = SCAN, \
 			.dev_list = std_dev_list, \
 			.dev_clear = std_dev_clear, \
 			.config_get = config_get, \
@@ -326,7 +326,7 @@ static int dev_acquisition_start(const struct sr_dev_inst *sdi)
 	DMM_ENTRY(ID, CHIPSET, VENDOR, MODEL, \
 		CONN, SERIALCOMM, PACKETSIZE, TIMEOUT, DELAY, \
 		NULL, REQUEST, VALID, PARSE, DETAILS, \
-		NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
+		NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, scan)
 
 #define DMM(ID, CHIPSET, VENDOR, MODEL, SERIALCOMM, PACKETSIZE, TIMEOUT, \
 		DELAY, REQUEST, VALID, PARSE, DETAILS) \
@@ -340,7 +340,15 @@ static int dev_acquisition_start(const struct sr_dev_inst *sdi)
 	DMM_ENTRY(ID, CHIPSET, VENDOR, MODEL, \
 		CONN, SERIALCOMM, PACKETSIZE, TIMEOUT, DELAY, \
 		OPEN, REQUEST, NULL, NULL, DETAILS, \
-		INIT, FREE, VALID, PARSE, NULL, NULL, NULL, NULL)
+		INIT, FREE, VALID, PARSE, NULL, NULL, NULL, NULL, scan)
+
+#define DMM_SCAN(ID, CHIPSET, VENDOR, MODEL, \
+		CONN, SERIALCOMM, PACKETSIZE, TIMEOUT, DELAY, \
+		INIT, FREE, OPEN, REQUEST, VALID, PARSE, DETAILS, SCAN) \
+	DMM_ENTRY(ID, CHIPSET, VENDOR, MODEL, \
+		CONN, SERIALCOMM, PACKETSIZE, TIMEOUT, DELAY, \
+		OPEN, REQUEST, NULL, NULL, DETAILS, \
+		INIT, FREE, VALID, PARSE, NULL, NULL, NULL, NULL, SCAN)
 
 SR_REGISTER_DEV_DRIVER_LIST(serial_dmm_drivers,
 	/*
@@ -364,7 +372,7 @@ SR_REGISTER_DEV_DRIVER_LIST(serial_dmm_drivers,
 		NULL
 	),
 
-        /* asycii based meters {{{ */
+	/* asycii based meters {{{ */
 	DMM(
 		"metrix-mx56c", asycii, "Metrix", "MX56C",
 		"2400/8n1", ASYCII_PACKET_SIZE, 0, 0, NULL,
@@ -865,6 +873,15 @@ SR_REGISTER_DEV_DRIVER_LIST(serial_dmm_drivers,
 		VC96_PACKET_SIZE, 0, 0, NULL,
 		sr_vc96_packet_valid, sr_vc96_parse,
 		NULL
+	),
+	/* }}} */
+	/* Zeeweii DSO3D12 integrated sd7501 based meter {{{ */
+	DMM_SCAN(
+		"zeeweii-dso3d12", dso3d12, "Zeeweii", "DSO3D12",
+		NULL, "115200/8n1/rts=0/dtr=0",
+		DSO3D12_PACKET_SIZE_MIN, 0, 0, NULL, NULL, NULL, NULL,
+		sr_zeeweii_dso3d12_packet_valid, sr_zeeweii_dso3d12_parse,
+		NULL, sr_zeeweii_dso3d12_scan
 	),
 	/* }}} */
 	/*
